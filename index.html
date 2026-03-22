@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的作品集 - 個人履歷</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 導航菜單 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">我的作品集</div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home">首頁</a></li>
+                <li><a href="#about">關於我</a></li>
+                <li><a href="#projects">作品</a></li>
+                <li><a href="#contact">聯繫</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 首頁部分 -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>歡迎來到我的作品集</h1>
+            <p>我是一位全棧開發者，热衷於創建美觀且功能性的網頁應用</p>
+            <a href="#projects" class="btn btn-primary">查看我的作品</a>
+        </div>
+    </section>
+
+    <!-- 關於我部分 -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2>關於我</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>
+                        我是一位充滿熱情的網頁開發者，擁有多年開發經驗。我專注於使用最新的網頁技術來創建高效、美觀的應用程序。
+                    </p>
+                    <p>
+                        我的技能包括 HTML5、CSS3、JavaScript、React、以及多個後端框架。我相信良好的代碼質量和用戶體驗是成功項目的關鍵。
+                    </p>
+                    <div class="skills">
+                        <h3>技能</h3>
+                        <ul>
+                            <li>HTML5 & CSS3</li>
+                            <li>JavaScript</li>
+                            <li>React</li>
+                            <li>Node.js</li>
+                            <li>響應式設計</li>
+                            <li>UI/UX Design</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 作品部分 -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2>我的作品</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="placeholder">項目 1</div>
+                    </div>
+                    <div class="project-info">
+                        <h3>網上商城</h3>
+                        <p>使用 React 和 Node.js 創建的全棧電商平台，包含購物車、支付功能和後台管理系統。</p>
+                        <a href="#" class="project-link">查看詳情 →</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="placeholder">項目 2</div>
+                    </div>
+                    <div class="project-info">
+                        <h3>任務管理應用</h3>
+                        <p>一個實時協作的任務管理工具，支持團隊成員即時通信和進度追蹤。</p>
+                        <a href="#" class="project-link">查看詳情 →</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="placeholder">項目 3</div>
+                    </div>
+                    <div class="project-info">
+                        <h3>天氣應用</h3>
+                        <p>使用 API 整合的天氣預報應用，提供實時天氣數據和預測功能。</p>
+                        <a href="#" class="project-link">查看詳情 →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 聯繫部分 -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>聯繫我</h2>
+            <p class="contact-intro">有任何問題或合作機會？歡迎與我聯繫！</p>
+            
+            <form class="contact-form" id="contactForm">
+                <div class="form-group">
+                    <label for="name">姓名</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">電子郵件</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">訊息</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">發送訊息</button>
+            </form>
+
+            <div class="contact-info">
+                <h3>其他聯繫方式</h3>
+                <ul>
+                    <li>📧 Email: your.email@example.com</li>
+                    <li>💼 LinkedIn: linkedin.com/in/yourprofile</li>
+                    <li>🐙 GitHub: github.com/yourprofile</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁腳 -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 我的作品集. 保留所有權利。</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

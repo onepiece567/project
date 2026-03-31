@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube 影片下載工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.05em;
+        }
+
+        input[type="url"],
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input[type="url"]:focus,
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .format-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .radio-option:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 35px;
+        }
+
+        button {
+            padding: 13px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.05em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-download:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-download:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-clear {
+            background: #f5f5f5;
+            color: #666;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-clear:hover:not(:disabled) {
+            background: #efefef;
+            border-color: #d0d0d0;
+        }
+
+        .btn-clear:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-preview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-preview:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .preview-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .preview-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .preview-image {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .info-item label {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 0.95em;
+        }
+
+        .info-item span {
+            color: #333;
+            font-size: 0.95em;
+            word-break: break-word;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status.show {
+            display: flex;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.loading {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .downloads-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .downloads-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.5em;
+        }
+
+        .file-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.2s, box-shadow 0.2s;
+            gap: 15px;
+        }
+
+        .file-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-thumbnail {
+            width: 120px;
+            height: 68px;
+            flex-shrink: 0;
+            border-radius: 4px;
+            background: #e0e0e0;
+            object-fit: cover;
+        }
+
+        .file-info {
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #333;
+            word-break: break-word;
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+
+        .file-size {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+            align-items: center;
+        }
+
+        .btn-download-file {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-download-file:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .btn-delete-file {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-delete-file:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .btn-delete-file:active {
+            transform: scale(0.95);
+        }
+
+        .no-files {
+            text-align: center;
+            padding: 30px 20px;
+            color: #999;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .error-text {
+            color: #721c24;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            .format-options {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-container {
+                grid-template-columns: 1fr;
+            }
+
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .file-thumbnail {
+                width: 100%;
+                height: auto;
+            }
+
+            .btn-download-file {
+                margin-left: 0;
+                margin-top: 10px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 YouTube 影片下載工具</h1>
+            <p>輕鬆下載您喜愛的 YouTube 影片</p>
+        </div>
+
+        <div class="content">
+            <form id="downloadForm">
+                <div class="form-group">
+                    <label for="youtubeUrl">YouTube URL</label>
+                    <input 
+                        type="url" 
+                        id="youtubeUrl" 
+                        placeholder="https://www.youtube.com/watch?v=..." 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>下載格式</label>
+                    <div class="format-options">
+                        <label class="radio-option">
+                            <input type="radio" name="format" value="best" checked>
+                            <span>最佳品質</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="format" value="video">
+                            <span>僅影片</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="format" value="audio">
+                            <span>僅音訊 (MP3)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="button" class="btn-preview" id="previewBtn">
+                        🎬 預覽影片
+                    </button>
+                </div>
+
+                <div id="previewSection" class="preview-section" style="display: none;">
+                    <div class="preview-container">
+                        <img id="previewImage" alt="影片預覽" class="preview-image">
+                        <div class="preview-info">
+                            <div class="info-item">
+                                <label>標題：</label>
+                                <span id="previewTitle">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>上傳者：</label>
+                                <span id="previewUploader">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>時長：</label>
+                                <span id="previewDuration">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>觀看次數：</label>
+                                <span id="previewViews">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-download" id="downloadBtn">
+                        下載
+                    </button>
+                    <button type="reset" class="btn-clear" id="clearBtn">
+                        清除
+                    </button>
+                </div>
+            </form>
+
+            <div id="status" class="status"></div>
+
+            <div class="downloads-section">
+                <h2>📁 已下載檔案</h2>
+                <div id="fileList" class="file-list">
+                    <div class="no-files">載入中...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('downloadForm');
+        const urlInput = document.getElementById('youtubeUrl');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const previewBtn = document.getElementById('previewBtn');
+        const statusDiv = document.getElementById('status');
+        const fileList = document.getElementById('fileList');
+        const previewSection = document.getElementById('previewSection');
+
+        // 表單提交
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await downloadVideo();
+        });
+
+        // 預覽按鈕
+        previewBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            await previewVideo();
+        });
+
+        async function previewVideo() {
+            const url = urlInput.value.trim();
+
+            if (!url) {
+                showStatus('請輸入有效的 YouTube URL', 'error');
+                return;
+            }
+
+            previewBtn.disabled = true;
+            showStatus('載入預覽中...', 'loading', true);
+
+            try {
+                const response = await fetch('/api/video-info', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // 顯示預覽信息
+                    document.getElementById('previewImage').src = data.thumbnailUrl;
+                    document.getElementById('previewTitle').textContent = data.title;
+                    document.getElementById('previewUploader').textContent = data.uploader;
+                    document.getElementById('previewDuration').textContent = formatDuration(data.duration);
+                    document.getElementById('previewViews').textContent = formatNumber(data.viewCount);
+                    
+                    previewSection.style.display = 'block';
+                    showStatus('✓ 預覽載入成功！', 'success');
+                } else {
+                    showStatus(`✗ ${data.error || '無法載入預覽'}`, 'error');
+                }
+            } catch (error) {
+                console.error('預覽錯誤:', error);
+                showStatus(`✗ 網路錯誤: ${error.message}`, 'error');
+            } finally {
+                previewBtn.disabled = false;
+            }
+        }
+
+        async function downloadVideo() {
+            const url = urlInput.value.trim();
+            const format = document.querySelector('input[name="format"]:checked').value;
+
+            if (!url) {
+                showStatus('請輸入有效的 YouTube URL', 'error');
+                return;
+            }
+
+            downloadBtn.disabled = true;
+            showStatus('下載中，請稍候...', 'loading', true);
+
+            try {
+                const response = await fetch('/api/download-youtube', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url, format })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus(`✓ ${data.message}`, 'success');
+                    urlInput.value = '';
+                    setTimeout(() => loadDownloadedFiles(), 1000);
+                } else {
+                    showStatus(`✗ ${data.error || '下載失敗'}`, 'error');
+                }
+            } catch (error) {
+                console.error('錯誤:', error);
+                showStatus(`✗ 網路錯誤: ${error.message}`, 'error');
+            } finally {
+                downloadBtn.disabled = false;
+            }
+        }
+
+        function showStatus(message, type, showSpinner = false) {
+            statusDiv.textContent = message;
+            statusDiv.className = `status show ${type}`;
+            
+            if (showSpinner) {
+                const spinner = document.createElement('div');
+                spinner.className = 'spinner';
+                statusDiv.insertBefore(spinner, statusDiv.firstChild);
+            }
+        }
+
+        async function loadDownloadedFiles() {
+            try {
+                const response = await fetch('/api/downloads');
+                const data = await response.json();
+
+                if (data.success && data.files && data.files.length > 0) {
+                    fileList.innerHTML = data.files.map(file => {
+                        // 添加時間戳確保圖片被強制重新加載，避免瀏覽器快取問題
+                        const imgSrc = file.frameUrl ? `${file.frameUrl}?t=${Date.now()}` : '';
+                        return `
+                        <div class="file-item">
+                            ${file.frameUrl ? `<img src="${imgSrc}" alt="影片縮圖" class="file-thumbnail" onerror="this.style.display='none'">` : '<div class="file-thumbnail" style="background: #e0e0e0;"></div>'}
+                            <div class="file-info">
+                                <div class="file-name">📹 ${escapeHtml(file.name)}</div>
+                                <div class="file-size">大小: ${file.sizeFormatted}</div>
+                            </div>
+                            <div class="file-actions">
+                                <a href="${file.downloadUrl}" download class="btn-download-file">下載</a>
+                                <button type="button" class="btn-delete-file" data-filename="${escapeHtml(file.name)}" title="刪除檔案">🗑️ 刪除</button>
+                            </div>
+                        </div>
+                    `;
+                    }).join('');
+                    
+                    // 為刪除按鈕添加事件監聽器
+                    document.querySelectorAll('.btn-delete-file').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            e.preventDefault();
+                            const filename = btn.getAttribute('data-filename');
+                            if (confirm(`確認要刪除 "${filename}" 嗎？`)) {
+                                await deleteDownloadedFile(filename);
+                            }
+                        });
+                    });
+                } else {
+                    fileList.innerHTML = '<div class="no-files">還沒有下載的檔案</div>';
+                }
+            } catch (error) {
+                console.error('載入檔案列表錯誤:', error);
+                fileList.innerHTML = '<div class="no-files">無法載入檔案列表</div>';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function deleteDownloadedFile(filename) {
+            try {
+                const response = await fetch('/api/delete-file', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ filename })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showStatus(`✓ 檔案已刪除: ${filename}`, 'success');
+                    setTimeout(() => loadDownloadedFiles(), 500);
+                } else {
+                    showStatus(`✗ 刪除失敗: ${data.error || '未知錯誤'}`, 'error');
+                }
+            } catch (error) {
+                console.error('刪除檔案錯誤:', error);
+                showStatus(`✗ 網路錯誤: ${error.message}`, 'error');
+            }
+        }
+
+        function formatDuration(seconds) {
+            if (!seconds) return '未知';
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}小時 ${minutes}分 ${secs}秒`;
+            } else {
+                return `${minutes}分 ${secs}秒`;
+            }
+        }
+
+        function formatNumber(num) {
+            if (!num) return '0';
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + '百萬';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + '千';
+            } else {
+                return num.toString();
+            }
+        }
+
+        // 頁面載入時獲取已下載檔案
+        window.addEventListener('load', loadDownloadedFiles);
+
+        // 每 30 秒刷新一次檔案列表
+        setInterval(loadDownloadedFiles, 30000);
+    </script>
+</body>
+</html>
